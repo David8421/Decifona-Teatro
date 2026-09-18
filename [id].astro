@@ -1,0 +1,184 @@
+---
+import { getCollection, render } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { SITIO, img } from '@data/sitio';
+
+/* Una página por archivo en src/content/obras/. Agregar un montaje
+   nuevo genera su ruta automáticamente. */
+export async function getStaticPaths() {
+  const obras = await getCollection('obras');
+  return obras.map(obra => ({ params: { id: obra.id }, props: { obra } }));
+}
+
+const { obra } = Astro.props;
+const { Content } = await render(obra);
+const d = obra.data;
+---
+
+<MainLayout
+  titulo={`${d.titulo} — ${SITIO.nombre}`}
+  descripcion={d.sinopsis}
+  imagenSocial={d.portada ? img(d.portada, 1200) : d.cartel}
+>
+  <article>
+    {/* Encabezado: la portada se funde con el fondo de la sala */}
+    <header class="pt-nav relative overflow-clip">
+      {
+        d.portada && (
+          <div class="vineta absolute inset-0 -z-10">
+            <img
+              src={img(d.portada, 2000)}
+              alt=""
+              width="2000"
+              height="1125"
+              class="fundido-abajo h-full w-full object-cover opacity-45"
+            />
+          </div>
+        )
+      }
+
+      <div class="marco limite seccion-amplia">
+        <a href="/#obras" class="enlace-sec mb-6">Volver al repertorio</a>
+        <p class="t-lede text-tiza-400 mb-4">{d.entrada}</p>
+        <h1 class="t-xl max-w-[16ch]">{d.titulo}</h1>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a class="btn" href={d.reservaUrl} target="_blank" rel="noopener">
+            Reservar por WhatsApp
+          </a>
+          <a
+            class="enlace-sec"
+            href={`mailto:${SITIO.correo}?subject=${encodeURIComponent(d.titulo)}`}
+          >
+            Pedir ficha técnica por correo
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="marco limite seccion">
+      <div class="grid gap-[clamp(30px,5vw,72px)] lg:grid-cols-[1fr_0.72fr]">
+        <div>
+          <p class="t-lede js-entra text-tiza-200 max-w-[46ch]">{d.sinopsis}</p>
+
+          {/* El cuerpo del Markdown de la obra */}
+          <div class="js-entra nota text-tiza-400 mt-8 max-w-[52ch]">
+            <Content />
+          </div>
+
+          <h2 class="js-entra mt-14 mb-5 text-[1.4rem]">Ficha técnica</h2>
+          <dl
+            class="js-entra rounded-caja grid gap-px overflow-hidden bg-white/10"
+          >
+            <div
+              class="bg-sala-800 grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr] sm:gap-4"
+            >
+              <dt class="text-tiza-400 text-sm">Duración</dt>
+              <dd class="m-0 font-medium">{d.duracion}</dd>
+            </div>
+            <div
+              class="bg-sala-800 grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr] sm:gap-4"
+            >
+              <dt class="text-tiza-400 text-sm">Clasificación</dt>
+              <dd class="m-0 font-medium">{d.clasificacion}</dd>
+            </div>
+            <div
+              class="bg-sala-800 grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr] sm:gap-4"
+            >
+              <dt class="text-tiza-400 text-sm">Espacio</dt>
+              <dd class="m-0 font-medium">{d.espacio}</dd>
+            </div>
+            {
+              d.requisitos.map(r => (
+                <div class="bg-sala-800 grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr] sm:gap-4">
+                  <dt class="text-tiza-400 text-sm">{r.campo}</dt>
+                  <dd class="m-0 font-medium">{r.valor}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+
+        <aside>
+          <img
+            src={d.cartel}
+            alt={d.cartelAlt}
+            width="1100"
+            height="1666"
+            loading="lazy"
+            decoding="async"
+            class="js-entra rounded-caja w-full object-cover"
+          />
+        </aside>
+      </div>
+    </div>
+
+    {
+      d.galeria.length > 0 && (
+        <div class="marco limite pb-[clamp(60px,11vh,130px)]">
+          <h2 class="js-entra mb-6 text-[1.4rem]">Imágenes del montaje</h2>
+          <div class="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+            {d.galeria.map(g => (
+              <figure
+                data-ampliable
+                tabindex="0"
+                role="button"
+                aria-label={`Ampliar: ${g.alt}`}
+                class="rounded-caja bg-sala-800 m-0 cursor-zoom-in overflow-hidden"
+              >
+                <img
+                  src={img(g.archivo, 700)}
+                  data-grande={img(g.archivo, 1600)}
+                  alt={g.alt}
+                  width="700"
+                  height="470"
+                  loading="lazy"
+                  decoding="async"
+                  class="foto-hover aspect-[3/2] w-full object-cover"
+                />
+              </figure>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {/* Cierre: la acción que importa, otra vez */}
+    <div class="marco limite pb-[clamp(60px,11vh,130px)]">
+      <div
+        class="js-entra rounded-bloque bg-sala-800 flex flex-wrap items-center justify-between gap-6 border border-white/10 p-[clamp(28px,4vw,56px)]"
+      >
+        <div>
+          <h2 class="t-l mb-2">¿Te interesa programarla?</h2>
+          <p class="text-tiza-400 max-w-[42ch]">
+            Escríbenos y te compartimos disponibilidad, ficha técnica completa y
+            condiciones de gira.
+          </p>
+        </div>
+        <a class="btn" href={d.reservaUrl} target="_blank" rel="noopener">
+          Escribir por WhatsApp
+        </a>
+      </div>
+    </div>
+  </article>
+</MainLayout>
+
+<style>
+  .nota :global(p) {
+    margin-bottom: 1em;
+  }
+  .nota :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .foto-hover {
+    transition-property: transform, filter;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+    filter: saturate(0.9) brightness(0.94);
+  }
+  figure:hover .foto-hover,
+  figure:focus-within .foto-hover {
+    transform: scale(1.04);
+    filter: none;
+  }
+</style>

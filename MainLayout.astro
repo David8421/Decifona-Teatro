@@ -1,0 +1,132 @@
+---
+import Nav from '@components/Nav.astro';
+import Footer from '@components/Footer.astro';
+import Visor from '@components/Visor.astro';
+import AccionMovil from '@components/AccionMovil.astro';
+import IndicadorEscena from '@components/IndicadorEscena.astro';
+import { SITIO, LOGO, HERO, img } from '@data/sitio';
+import '@styles/global.css';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  imagenSocial?: string;
+}
+
+const {
+  titulo = `${SITIO.nombre} — ${SITIO.lema}`,
+  descripcion = SITIO.descripcion,
+  imagenSocial = img(HERO.imagen, 1200),
+} = Astro.props;
+
+const canonica = new URL(Astro.url.pathname, Astro.site).href;
+
+const datosEstructurados = {
+  '@context': 'https://schema.org',
+  '@type': 'PerformingGroup',
+  name: SITIO.nombre,
+  description: SITIO.descripcion,
+  url: SITIO.url,
+  email: SITIO.correo,
+  foundingDate: String(SITIO.fundacion),
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Ciudad de México',
+    addressCountry: 'MX',
+  },
+};
+---
+
+<!doctype html>
+<html lang="es" class="lenis lenis-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href={img(LOGO, 64)} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={imagenSocial} />
+    <meta property="og:locale" content="es_MX" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {/* El CDN de imágenes es de otro dominio: abrimos la conexión antes */}
+    <link rel="preconnect" href="https://assets.zyrosite.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* La hoja de fuentes se carga sin bloquear el primer render */}
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&display=swap"
+      />
+    </noscript>
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(datosEstructurados)}
+    />
+
+    {
+      /* Se resuelve antes del primer pintado: sin esto, quien pide
+        menos movimiento vería el hero a oscuras hasta que cargue el
+        módulo diferido. */
+    }
+    <script is:inline>
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches)
+        document.documentElement.classList.add('sin-motor');
+    </script>
+
+    {/* Sin JavaScript el contenido igual se ve */}
+    <noscript>
+      <style>
+        .js-entra {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        .js-palabra {
+          opacity: 1 !important;
+        }
+      </style>
+    </noscript>
+
+    <script>
+      import '@scripts/motor.js';
+      import '@scripts/interfaz.js';
+    </script>
+  </head>
+
+  <body class="grano">
+    <a
+      href="#contenido"
+      class="focus:bg-foco-700 sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:rounded-full focus:px-4 focus:py-3 focus:text-white"
+    >
+      Saltar al contenido
+    </a>
+
+    <Nav />
+    <IndicadorEscena />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <AccionMovil />
+    <Visor />
+  </body>
+</html>

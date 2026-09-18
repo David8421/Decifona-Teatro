@@ -1,0 +1,50 @@
+---
+import Escena from '@components/Escena.astro';
+import { CIFRAS } from '@data/sitio';
+
+const frase =
+  'Deficcionar es mirar nuestra realidad y entenderla como una fuente de ficciones que, desde el teatro, conectan con lo humano.';
+
+/* Partimos la frase para poder encender palabra por palabra con el scroll. */
+const palabras = frase.split(' ');
+---
+
+<section id="manifiesto" class="seccion-amplia marco limite">
+  <p
+    data-frase
+    class="max-w-[19ch] text-[clamp(1.8rem,4.6vw,4rem)] leading-[1.14] font-semibold tracking-[-0.04em]"
+  >
+    {
+      palabras.map((p, i) => (
+        <span class="js-palabra">
+          {p}
+          {i < palabras.length - 1 ? ' ' : ''}
+        </span>
+      ))
+    }
+  </p>
+
+  <p class="js-entra text-tiza-400 mt-11 max-w-[52ch] text-[1.05rem]">
+    Creamos puestas en escena inspiradas tanto en situaciones cotidianas, donde
+    los personajes se enfrentan a sí mismos, como en mitos reinterpretados y
+    traídos a una realidad contemporánea. Buscamos que quien mira salga de su
+    zona de confort y se reconozca en esos instantes de vida.
+  </p>
+</section>
+
+<section class="marco limite">
+  <div
+    class="js-entra rounded-caja grid gap-px overflow-hidden bg-white/10 sm:grid-cols-2"
+  >
+    {
+      CIFRAS.map(c => (
+        <div class="bg-sala-900 px-6.5 py-7.5">
+          <b class="block text-[clamp(2.2rem,4.4vw,3.4rem)] font-bold tracking-[-0.045em]">
+            {c.dato}
+          </b>
+          <span class="text-tiza-400 text-[0.95rem]">{c.pie}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>

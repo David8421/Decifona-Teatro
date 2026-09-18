@@ -1,0 +1,183 @@
+---
+import { SITIO, NAVEGACION, LOGO, img } from '@data/sitio';
+---
+
+<header
+  data-nav
+  class="h-nav marco ease-suave fixed inset-x-0 top-0 z-[90] flex items-center justify-between border-b border-transparent transition-[background-color,backdrop-filter,border-color,transform] duration-300"
+>
+  <a href="#inicio" aria-label={`${SITIO.nombre}, inicio`} class="shrink-0">
+    <img
+      src={img(LOGO, 280)}
+      alt={SITIO.nombre}
+      width="104"
+      height="53"
+      class="w-[104px] opacity-95"
+    />
+  </a>
+
+  <nav aria-label="Principal">
+    <ul data-menu class="nav-lista">
+      {
+        NAVEGACION.map(enlace => (
+          <li>
+            <a href={enlace.url}>{enlace.texto}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <a
+    href={`https://wa.me/${SITIO.whatsapp}`}
+    target="_blank"
+    rel="noopener"
+    class="nav-cta"
+  >
+    Reservar
+  </a>
+
+  <button
+    data-menu-btn
+    class="nav-burger"
+    aria-label="Abrir menú"
+    aria-expanded="false"
+  >
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<style>
+  header {
+    background: rgb(10 10 12 / 0);
+    backdrop-filter: blur(0px);
+  }
+
+  :global(.nav-vidrio) {
+    background: rgb(10 10 12 / 0.72) !important;
+    backdrop-filter: saturate(180%) blur(22px);
+    -webkit-backdrop-filter: saturate(180%) blur(22px);
+    border-bottom-color: rgb(255 255 255 / 0.09) !important;
+  }
+
+  :global(.nav-oculto) {
+    transform: translateY(-100%);
+  }
+
+  .nav-lista {
+    display: flex;
+    gap: 34px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-lista a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding-inline: 2px;
+    font-size: 13.5px;
+    color: var(--color-tiza-200);
+    opacity: 0.86;
+    transition-property: opacity, color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .nav-lista a:hover {
+    opacity: 1;
+    color: #fff;
+  }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 16px;
+    border-radius: 980px;
+    background: var(--color-foco-700);
+    color: #fff;
+    transition-property: transform, background-color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .nav-cta:hover {
+    transform: scale(1.04);
+    background: var(--color-foco-800);
+  }
+  .nav-cta:active {
+    transform: scale(0.97);
+    background: var(--color-foco-900);
+    transition-duration: 90ms;
+  }
+
+  .nav-burger {
+    display: none;
+    place-items: center;
+    width: var(--spacing-tactil);
+    height: var(--spacing-tactil);
+    margin-right: -10px; /* alinea ópticamente con el borde del marco */
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+  .nav-burger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--color-tiza-50);
+    transition:
+      transform 0.4s var(--ease-resorte),
+      opacity 0.2s;
+  }
+  .nav-burger span + span {
+    margin-top: 5px;
+  }
+
+  @media (max-width: 900px) {
+    .nav-burger {
+      display: grid;
+    }
+    .nav-cta {
+      display: none;
+    }
+    .nav-lista {
+      position: fixed;
+      inset: var(--spacing-nav) 0 auto 0;
+      flex-direction: column;
+      gap: 0;
+      padding: 8px max(22px, min(5vw, 80px)) 26px;
+      background: rgb(10 10 12 / 0.96);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgb(255 255 255 / 0.08);
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 0.55s var(--ease-resorte);
+    }
+    .nav-lista li {
+      border-bottom: 1px solid rgb(255 255 255 / 0.07);
+    }
+    .nav-lista a {
+      display: block;
+      padding: 17px 0;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      opacity: 1;
+    }
+    :global(.nav-abierto) .nav-lista {
+      clip-path: inset(0 0 0 0);
+    }
+    :global(.nav-abierto) .nav-burger span:nth-child(1) {
+      transform: translateY(6.5px) rotate(45deg);
+    }
+    :global(.nav-abierto) .nav-burger span:nth-child(2) {
+      opacity: 0;
+    }
+    :global(.nav-abierto) .nav-burger span:nth-child(3) {
+      transform: translateY(-6.5px) rotate(-45deg);
+    }
+  }
+</style>

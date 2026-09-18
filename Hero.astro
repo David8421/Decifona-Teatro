@@ -1,0 +1,115 @@
+---
+import { SITIO, HERO, img } from '@data/sitio';
+
+/*
+ * Hero.
+ *
+ * El gesto es teatral, no de página de producto: la sala arranca a
+ * oscuras y sube la luz de escena. Primero una luz de relleno tenue,
+ * después la luz principal, y el nombre aparece cuando la luz lo
+ * encuentra. Al bajar, la luz se va apagando en vez de alejarse.
+ *
+ * La foto es vertical. En escritorio se recorta desde el centro-alto,
+ * que es donde está el actor iluminado.
+ */
+---
+
+<section id="inicio" data-hero class="relative h-[150vh]">
+  <div
+    class="sticky top-0 grid h-svh place-items-center overflow-hidden bg-black"
+  >
+    <div
+      data-hero-fondo
+      class="absolute inset-0 will-change-[filter,transform]"
+    >
+      <img
+        src={img(HERO.imagen, 1600)}
+        alt={HERO.alt}
+        width="1600"
+        height="2140"
+        fetchpriority="high"
+        class="h-full w-full object-cover object-[50%_42%]"
+      />
+    </div>
+
+    {/* Luz de escena: aclara el centro y hunde los bordes en negro */}
+    <div
+      class="absolute inset-0"
+      style="background: radial-gradient(75% 65% at 50% 44%, rgb(0 0 0 / .12) 0%, rgb(0 0 0 / .62) 58%, rgb(0 0 0 / .95) 100%)"
+    >
+    </div>
+
+    <div
+      data-hero-cuerpo
+      class="marco relative z-[2] text-center will-change-transform"
+    >
+      <h1 class="t-xxl mb-4.5">
+        <span class="linea"><span data-hero-linea>Deficciona</span></span>
+        <span class="linea"
+          ><span data-hero-linea class="text-tiza-200">Teatro</span></span
+        >
+      </h1>
+      <p data-hero-texto class="t-lede text-tiza-200 mx-auto max-w-[34ch]">
+        Compañía independiente de la Ciudad de México. Desde {SITIO.fundacion}.
+      </p>
+      <div data-hero-texto class="mt-8 flex flex-wrap justify-center gap-3.5">
+        <a class="btn" href="#obras">Ver el repertorio</a>
+        <a class="btn btn-fantasma" href="#video">Ver el video</a>
+      </div>
+    </div>
+
+    <div
+      data-hero-flecha
+      aria-hidden="true"
+      class="raton absolute bottom-[34px] left-1/2 z-[2] h-[34px] w-[22px] -translate-x-1/2 rounded-[14px] border-[1.5px] border-white/40"
+    >
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Cada línea del título es una rendija: el texto sube desde
+     detrás, como quien entra a escena. */
+  .linea {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+
+  .raton::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    translate: -50% 0;
+    width: 3px;
+    height: 6px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 0.75);
+    animation: gota 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes gota {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(13px);
+      opacity: 0;
+    }
+  }
+
+  /* Estado inicial: sala a oscuras. GSAP sube la luz.
+     Si no hay JS, se ve encendido desde el principio. */
+  :global(html:not(.sin-motor)) [data-hero-fondo] {
+    filter: brightness(0.06) saturate(0.25);
+  }
+  :global(html:not(.sin-motor)) [data-hero-linea],
+  :global(html:not(.sin-motor)) [data-hero-texto],
+  :global(html:not(.sin-motor)) [data-hero-flecha] {
+    opacity: 0;
+  }
+</style>

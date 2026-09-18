@@ -1,0 +1,342 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════
+   DEFICCIONA TEATRO — sistema de diseño
+   Lenguaje visual: superficies profundas, tipografía
+   apretada, un solo acento. Movimiento ligado al scroll.
+   ═══════════════════════════════════════════════ */
+
+@theme {
+  /* Reiniciamos la paleta de Tailwind y dejamos solo la nuestra */
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-black: #000;
+  --color-white: #fff;
+
+  /* Superficies */
+  --color-sala-950: #000000; /* fondo base */
+  --color-sala-900: #0a0a0c;
+  --color-sala-800: #131316; /* tarjetas */
+  --color-sala-700: #1d1d21;
+  --color-sala-600: #2a2a2f;
+
+  /* Texto */
+  --color-tiza-50: #f5f5f7; /* texto principal */
+  --color-tiza-200: #d2d2d7; /* texto secundario */
+  --color-tiza-400: #86868b; /* texto de apoyo */
+
+  /* Bloque claro */
+  --color-papel-50: #f5f5f7;
+  --color-papel-200: #e3e3e6;
+  --color-papel-700: #424245;
+  --color-papel-800: #1d1d1f;
+
+  /* Acento único, en dos familias.
+     GRÁFICO: barras, iconos, resplandores. Nunca lleva texto encima.
+     SUPERFICIE: botones y cualquier fondo con texto blanco.
+     El rosa brillante da 3.52:1 con blanco y no pasa AA, por eso
+     los botones usan los tonos oscuros. */
+  --color-foco-400: #ff6b8a; /* gráfico */
+  --color-foco-500: #ff375f; /* gráfico — 5.96:1 sobre negro */
+  --color-foco-700: #d81f47; /* superficie — 4.99:1 con blanco */
+  --color-foco-800: #c9143d; /* superficie, hover — 5.75:1 */
+  --color-foco-900: #b81038; /* superficie, activo — 6.63:1 */
+
+  --font-sans:
+    'Inter Tight', -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+
+  --radius-chico: 12px;
+  --radius-caja: 22px;
+  --radius-bloque: 34px;
+
+  --ease-resorte: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-suave: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-salida: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Dos escalas de tiempo, y no se mezclan.
+     RESPUESTA: reacción a un gesto del usuario. Tiene que sentirse
+     inmediata; por encima de 250ms se percibe como lentitud.
+     ESCENA: recorridos largos, siempre atados al scroll. */
+  --duracion-respuesta: 180ms;
+  --duracion-entrada: 240ms;
+  --duracion-salida: 140ms;
+
+  --spacing-nav: 56px;
+  --spacing-tactil: 44px; /* área mínima para dedo */
+}
+
+/* ── Base ─────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-sala-950);
+    color: var(--color-tiza-50);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  /* Descripciones y pies: evita la última línea huérfana */
+  p,
+  figcaption,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  /* Cifras y años no deben bailar al cambiar de dígito */
+  time,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Las fotos oscuras se funden con el fondo negro sin un borde */
+  img {
+    outline: 1px solid rgb(255 255 255 / 0.1);
+    outline-offset: -1px;
+  }
+
+  ::selection {
+    background: var(--color-foco-700);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-foco-500);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+
+  body::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+/* ── Escala tipográfica ───────────────────── */
+@utility t-xxl {
+  font-size: clamp(3rem, 11.5vw, 10.5rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.94;
+}
+@utility t-xl {
+  font-size: clamp(2.4rem, 6.4vw, 5.2rem);
+  letter-spacing: -0.042em;
+}
+@utility t-l {
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  letter-spacing: -0.035em;
+}
+@utility t-lede {
+  font-size: clamp(1.15rem, 1.9vw, 1.55rem);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+
+/* ── Contenedor ───────────────────────────── */
+@utility marco {
+  padding-inline: max(22px, min(5vw, 80px));
+}
+@utility limite {
+  max-width: 1320px;
+  margin-inline: auto;
+}
+
+/* ── Ritmo vertical: tres valores, no nueve ── */
+@utility seccion {
+  padding-block: clamp(60px, 11vh, 130px);
+}
+@utility seccion-amplia {
+  padding-block: clamp(90px, 16vh, 180px);
+}
+@utility seccion-cierre {
+  padding-block: clamp(80px, 15vh, 180px);
+}
+
+/* ── Tratamiento de imágenes de fondo ─────── */
+
+/* Funde el borde inferior de una imagen con el fondo de la sala */
+@utility fundido-abajo {
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+@utility fundido-lados {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+}
+
+@layer components {
+  /* Viñeteado: concentra la mirada al centro de una foto ancha */
+  .vineta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      110% 80% at 50% 45%,
+      transparent 30%,
+      rgb(0 0 0 / 0.55) 100%
+    );
+  }
+
+  /* Grano de proyección. Va sobre todo el documento, muy sutil. */
+  .grano::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* ── Botones ────────────────────────────── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: var(--spacing-tactil);
+    border-radius: 980px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    background: var(--color-foco-700);
+    color: #fff;
+    cursor: pointer;
+    transition-property: transform, background-color, border-color, box-shadow;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .btn:hover {
+    background: var(--color-foco-800);
+    transform: translateY(-1px);
+    will-change: transform;
+  }
+  .btn:active {
+    background: var(--color-foco-900);
+    transform: scale(0.96);
+    transition-duration: 90ms;
+    will-change: transform;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--color-foco-500);
+    outline-offset: 3px;
+  }
+
+  .btn-fantasma {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.16);
+    color: var(--color-tiza-50);
+  }
+  .btn-fantasma:hover {
+    background: rgb(255 255 255 / 0.15);
+    border-color: rgb(255 255 255 / 0.28);
+  }
+  .btn-fantasma:active {
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  .claro .btn-fantasma {
+    background: rgb(0 0 0 / 0.06);
+    border-color: rgb(0 0 0 / 0.12);
+    color: var(--color-papel-800);
+  }
+  .claro .btn-fantasma:hover {
+    background: rgb(0 0 0 / 0.11);
+  }
+
+  /* Enlace secundario: no compite con el botón principal */
+  .enlace-sec {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--spacing-tactil);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-tiza-200);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: rgb(255 255 255 / 0.3);
+    transition-property: color, text-decoration-color;
+    transition-duration: var(--duracion-respuesta);
+  }
+  .enlace-sec:hover {
+    color: #fff;
+    text-decoration-color: currentColor;
+  }
+
+  /* Etiquetas de ficha técnica */
+  .pastilla {
+    font-size: 13px;
+    color: var(--color-tiza-200);
+    background: rgb(255 255 255 / 0.07);
+    border: 1px solid rgb(255 255 255 / 0.09);
+    padding: 7px 13px;
+    border-radius: 980px;
+  }
+}
+
+/* ── Estados de animación ─────────────────── */
+.js-entra {
+  opacity: 0;
+  transform: translateY(26px);
+}
+.js-palabra {
+  opacity: 0.16;
+}
+
+/* Respaldo: si JS falla o está deshabilitado, todo se ve igual */
+.sin-motor .js-entra {
+  opacity: 1;
+  transform: none;
+}
+.sin-motor .js-palabra {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js-entra {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .js-palabra {
+    opacity: 1 !important;
+  }
+  .grano::before {
+    display: none;
+  }
+}

@@ -1,0 +1,44 @@
+---
+import { BANDA, img } from '@data/sitio';
+
+/*
+ * Banda de imagen a ancho completo. Rompe el tramo más largo de la
+ * página sin imágenes (manifiesto y repertorio) y da respiro entre
+ * dos bloques densos de texto. La foto se funde con el fondo por los
+ * cuatro lados para que no se lea como un recuadro pegado.
+ */
+---
+
+<section aria-hidden="true" class="banda relative overflow-clip">
+  <div data-banda class="vineta relative h-full will-change-transform">
+    <img
+      src={img(BANDA.archivo, 2000)}
+      alt=""
+      width="2000"
+      height="1125"
+      loading="lazy"
+      decoding="async"
+      class="fundido-lados h-full w-full scale-110 object-cover opacity-70"
+    />
+  </div>
+  <div class="degradado" aria-hidden="true"></div>
+</section>
+
+<style>
+  .banda {
+    height: clamp(220px, 42vh, 480px);
+  }
+  /* Funde arriba y abajo con el negro de la sala */
+  .degradado {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(--color-sala-950) 0%,
+      transparent 28%,
+      transparent 72%,
+      var(--color-sala-950) 100%
+    );
+  }
+</style>

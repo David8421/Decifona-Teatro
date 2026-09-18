@@ -1,0 +1,81 @@
+---
+import { ESCENAS } from '@data/escenas';
+---
+
+{/* Filete de progreso: una sola línea, arriba del todo */}
+<div data-progreso class="progreso" aria-hidden="true"><i></i></div>
+
+{
+  /*
+  Contador de escena. Solo en escritorio y solo como referencia
+  visual: la navegación real es el menú, así que esto no recibe foco
+  ni se anuncia a los lectores de pantalla.
+*/
+}
+<div data-contador class="contador" aria-hidden="true">
+  {
+    ESCENAS.map(e => (
+      <span data-contador-item={e.ancla}>
+        <b>{e.numero}</b> {e.rotulo}
+      </span>
+    ))
+  }
+</div>
+
+<style>
+  .progreso {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 99;
+    height: 2px;
+    pointer-events: none;
+  }
+  .progreso i {
+    display: block;
+    height: 100%;
+    background: var(--color-foco-500);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .contador {
+    position: fixed;
+    left: max(22px, min(5vw, 80px));
+    bottom: 26px;
+    z-index: 88;
+    display: none;
+    pointer-events: none;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-tiza-400);
+    mix-blend-mode: difference;
+  }
+  .contador span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity var(--duracion-entrada) var(--ease-suave),
+      transform var(--duracion-entrada) var(--ease-suave);
+  }
+  .contador span b {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .contador span[data-activa] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (min-width: 1100px) {
+    .contador {
+      display: grid;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .contador span {
+      transition: none;
+    }
+  }
+</style>

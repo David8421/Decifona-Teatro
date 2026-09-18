@@ -1,0 +1,122 @@
+---
+import { SITIO, REDES, FONDO_CONTACTO, img } from '@data/sitio';
+import Escena from '@components/Escena.astro';
+
+const canales = [
+  {
+    etiqueta: 'WhatsApp',
+    valor: SITIO.whatsappVisible,
+    url: `https://wa.me/${SITIO.whatsapp}`,
+    externo: true,
+  },
+  {
+    etiqueta: 'Correo',
+    valor: SITIO.correo,
+    url: `mailto:${SITIO.correo}`,
+    externo: false,
+  },
+  {
+    etiqueta: 'Instagram',
+    valor: '@dficcionateatro',
+    url: REDES[0].url,
+    externo: true,
+  },
+  {
+    etiqueta: 'Facebook',
+    valor: '/dficcionateatro',
+    url: REDES[1].url,
+    externo: true,
+  },
+];
+---
+
+<section
+  id="contacto"
+  class="seccion-cierre relative overflow-clip text-center"
+>
+  {
+    /* Antes esta sección era solo un resplandor plano. Ahora cierra con
+      una foto de escena, atenuada para que el texto siga legible. */
+  }
+  <div class="absolute inset-0 z-0" aria-hidden="true">
+    <div
+      data-parallax-fondo
+      class="vineta absolute -inset-[8%] will-change-transform"
+    >
+      <img
+        src={img(FONDO_CONTACTO.archivo, 2000)}
+        alt=""
+        width="2000"
+        height="1125"
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover opacity-45 grayscale"
+      />
+    </div>
+    <div class="velo absolute inset-0"></div>
+  </div>
+
+  <div class="marco limite relative z-[1]">
+    <div class="js-entra mx-auto w-fit"><Escena ancla="contacto" /></div>
+    <h2 class="t-xxl js-entra">Hablemos</h2>
+    <p class="t-lede js-entra text-tiza-200 mx-auto mt-4.5 max-w-[44ch]">
+      Programación de funciones, giras, festivales, talleres o prensa.
+    </p>
+
+    <div
+      class="js-entra mt-[clamp(38px,6vw,64px)] grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {
+        canales.map(c => (
+          <a
+            href={c.url}
+            target={c.externo ? '_blank' : undefined}
+            rel={c.externo ? 'noopener' : undefined}
+            class="canal rounded-caja border border-white/10 px-5.5 py-6.5 text-left"
+          >
+            <div class="text-tiza-400 mb-1.5 text-[13px]">{c.etiqueta}</div>
+            <div class="text-[1.08rem] font-medium tracking-[-0.02em] break-words">
+              {c.valor}
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .velo {
+    background:
+      radial-gradient(
+        60% 55% at 50% 45%,
+        rgb(255 55 95 / 0.16),
+        transparent 70%
+      ),
+      linear-gradient(
+        to bottom,
+        var(--color-sala-950) 0%,
+        rgb(0 0 0 / 0.55) 45%,
+        var(--color-sala-950) 100%
+      );
+  }
+  /* Vidrio sobre la foto: las tarjetas se leen sin tapar la imagen */
+  .canal {
+    display: block;
+    background: rgb(19 19 22 / 0.72);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    transition-property: transform, background-color, border-color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .canal:hover {
+    transform: translateY(-3px);
+    background: rgb(29 29 33 / 0.85);
+    border-color: rgb(255 255 255 / 0.22);
+  }
+  .canal:active {
+    transform: scale(0.985);
+    transition-duration: 90ms;
+  }
+</style>

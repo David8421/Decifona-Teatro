@@ -1,0 +1,81 @@
+---
+import { RECONOCIMIENTOS, RECONOCIMIENTO_FOTOS, SITIO, img } from '@data/sitio';
+import Escena from '@components/Escena.astro';
+---
+
+{/* Bloque claro: rompe el negro a la mitad del recorrido */}
+<section
+  class="claro seccion rounded-bloque bg-papel-50 text-papel-800 mt-[clamp(60px,10vh,120px)] overflow-clip"
+>
+  <div id="nosotros" class="marco limite">
+    <div
+      class="grid items-center gap-[clamp(30px,5vw,80px)] lg:grid-cols-[1fr_0.82fr]"
+    >
+      <div>
+        <div class="js-entra"><Escena ancla="nosotros" claro /></div>
+        <h2 class="t-xl js-entra">Quiénes somos</h2>
+        <p class="t-lede js-entra text-papel-700 mt-4.5 max-w-[34ch]">
+          Aquí seguimos y seguiremos deficcionando, mientras haya una historia
+          que contar.
+        </p>
+        <p class="js-entra mt-5.5 max-w-[52ch] text-[#6e6e73]">
+          Somos una compañía independiente de la Ciudad de México. Desde {
+            SITIO.fundacion
+          }
+          hemos participado en temporadas y festivales nacionales e internacionales,
+          buscando ese punto exacto donde lo cómico y lo trágico se tocan.
+        </p>
+
+        <ul class="js-entra mt-9.5">
+          {
+            RECONOCIMIENTOS.map(r => (
+              <li class="flex items-baseline gap-5 border-t border-black/10 py-5 last:border-b">
+                <time class="shrink-0 text-[15px] text-[#6e6e73]">
+                  {r.anio}
+                </time>
+                <div>
+                  <strong class="block text-[1.15rem] font-semibold tracking-[-0.02em]">
+                    {r.titulo}
+                  </strong>
+                  <p class="mt-1 text-[0.98rem] text-[#6e6e73]">{r.detalle}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {
+        /* Tres publicaciones en escalera: la del centro sube, las de los
+          lados bajan. Antes eran dos y la composición quedaba plana. */
+      }
+      <div class="grid grid-cols-3 gap-3">
+        {
+          RECONOCIMIENTO_FOTOS.map((f, i) => (
+            <img
+              data-parallax={i === 1 ? '-52' : '48'}
+              src={img(f.archivo, 700)}
+              alt={f.alt}
+              width="700"
+              height="1136"
+              loading="lazy"
+              decoding="async"
+              class:list={[
+                'rounded-chico aspect-[3/4.5] w-full object-cover',
+                i === 1 && 'lg:-translate-y-6',
+              ]}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* La imagen clara no necesita el contorno blanco de la base */
+  figure img,
+  .par-fotos img {
+    outline-color: rgb(0 0 0 / 0.08);
+  }
+</style>

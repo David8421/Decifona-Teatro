@@ -1,0 +1,141 @@
+---
+import Escena from '@components/Escena.astro';
+import { HISTORIAL, SITIO, img } from '@data/sitio';
+
+/*
+ * Historial de montajes. Viene del sitio anterior y se conserva porque
+ * es la prueba de trayectoria de la compañía.
+ *
+ * Diferencia con el repertorio activo: estas obras ya no están en gira,
+ * así que la ficha no lleva botón de reservar. El cartel se amplía en
+ * el visor, que es la información real que aporta cada una.
+ */
+---
+
+<section id="historial" class="seccion marco limite">
+  <header class="js-entra mb-[clamp(36px,6vw,72px)]">
+    <Escena ancla="historial" />
+    <h2 class="t-xl mb-3.5">Montajes anteriores</h2>
+    <p class="t-lede text-tiza-200 max-w-[42ch]">
+      Obras que ya presentamos y que no están en gira. Toca un cartel para verlo
+      completo.
+    </p>
+  </header>
+
+  <ol class="grid list-none gap-5 p-0 sm:grid-cols-2">
+    {
+      HISTORIAL.map(obra => (
+        <li class="js-entra">
+          <article class="ficha rounded-bloque bg-sala-800 flex h-full flex-col overflow-hidden border border-white/10">
+            {/* Los carteles vienen en formatos distintos: tres verticales
+                y uno horizontal. En vez de recortarlos para igualarlos,
+                cada uno se muestra completo sobre una versión borrosa de
+                sí mismo, que rellena la caja sin inventar un fondo. */}
+            <figure
+              data-ampliable
+              tabindex="0"
+              role="button"
+              aria-label={`Ampliar el cartel de ${obra.titulo}`}
+              class="cartel bg-sala-900 relative m-0 aspect-[4/3] cursor-zoom-in overflow-hidden"
+            >
+              <img
+                src={img(obra.archivo, 400)}
+                alt=""
+                aria-hidden="true"
+                class="relleno absolute inset-0 h-full w-full object-cover"
+              />
+              <img
+                src={img(obra.archivo, 900)}
+                data-grande={img(obra.archivo, 1600)}
+                alt={obra.alt}
+                loading="lazy"
+                decoding="async"
+                class="relative h-full w-full object-contain"
+              />
+            </figure>
+
+            <div class="flex flex-1 flex-col gap-2.5 p-6">
+              <h3 class="text-[1.55rem] leading-tight">
+                {obra.titulo}
+                {obra.subtitulo && (
+                  <span class="text-tiza-400 mt-1 block text-[0.95rem] font-normal tracking-normal">
+                    {obra.subtitulo}
+                  </span>
+                )}
+              </h3>
+
+              {obra.autoria && (
+                <p class="text-tiza-200 text-[0.98rem]">
+                  {obra.autoria}
+                  {obra.reparto && (
+                    <span class="text-tiza-400 block">{obra.reparto}</span>
+                  )}
+                </p>
+              )}
+
+              {(obra.sede || obra.temporada) && (
+                <dl class="mt-auto grid gap-2 border-t border-white/10 pt-4 text-[0.9rem]">
+                  {obra.sede && (
+                    <div>
+                      <dt class="text-tiza-400">Sede</dt>
+                      <dd class="m-0">{obra.sede}</dd>
+                      {obra.direccion && (
+                        <dd class="text-tiza-400 m-0">{obra.direccion}</dd>
+                      )}
+                    </div>
+                  )}
+                  {obra.temporada && (
+                    <div>
+                      <dt class="text-tiza-400">Temporada</dt>
+                      <dd class="m-0">{obra.temporada}</dd>
+                    </div>
+                  )}
+                </dl>
+              )}
+            </div>
+          </article>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="js-entra text-tiza-400 mt-8">
+    ¿Te interesa alguno de estos montajes?{' '}
+    <a
+      class="enlace-sec"
+      href={`https://wa.me/${SITIO.whatsapp}?text=Hola,%20quiero%20información%20de%20un%20montaje%20anterior`}
+      target="_blank"
+      rel="noopener"
+    >
+      Pregúntanos por su disponibilidad
+    </a>
+  </p>
+</section>
+
+<style>
+  .ficha {
+    transition-property: transform, border-color, background-color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .ficha:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 255 255 / 0.2);
+    background: var(--color-sala-700);
+  }
+  /* Relleno de la caja: la misma imagen desenfocada y apagada */
+  .relleno {
+    filter: blur(26px) brightness(0.4) saturate(1.2);
+    transform: scale(1.25);
+    outline: none;
+  }
+  .cartel img:not(.relleno) {
+    filter: brightness(0.94);
+    transition: filter var(--duracion-respuesta) var(--ease-suave);
+    outline: none;
+  }
+  .ficha:hover .cartel img:not(.relleno),
+  .cartel:focus-within img:not(.relleno) {
+    filter: none;
+  }
+</style>

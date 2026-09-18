@@ -1,0 +1,59 @@
+---
+import { VIDEO_ID } from '@data/sitio';
+---
+
+<section id="video" class="seccion marco limite">
+  <div
+    data-video={VIDEO_ID}
+    class="js-entra rounded-bloque bg-sala-800 relative aspect-video overflow-hidden"
+  >
+    <button
+      data-video-play
+      aria-label="Reproducir video de Deficciona Teatro"
+      class="cubierta absolute inset-0 w-full cursor-pointer border-0 bg-transparent p-0"
+    >
+      <img
+        src={`https://i.ytimg.com/vi/${VIDEO_ID}/maxresdefault.jpg`}
+        alt=""
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+        class="ease-suave h-full w-full object-cover brightness-[.72] transition-[transform,filter] duration-300"
+      />
+      <span class="play" aria-hidden="true">
+        <svg viewBox="0 0 24 24" class="ml-1 w-6.5 fill-white">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+      </span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .cubierta:hover img {
+    transform: scale(1.035);
+    filter: brightness(0.85);
+  }
+  .play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgb(255 255 255 / 0.16);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition-property: transform, background-color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .cubierta:hover .play {
+    transform: scale(1.12);
+    background: rgb(255 255 255 / 0.26);
+  }
+</style>

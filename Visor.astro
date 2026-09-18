@@ -1,0 +1,74 @@
+---
+/* Visor de imágenes a pantalla completa, compartido por todo el sitio. */
+---
+
+<div
+  data-visor
+  role="dialog"
+  aria-modal="true"
+  aria-label="Imagen ampliada"
+  class="visor"
+>
+  <button data-visor-cerrar aria-label="Cerrar" class="visor-cerrar"
+    >&times;</button
+  >
+  <img alt="" />
+</div>
+
+<style>
+  .visor {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: grid;
+    place-items: center;
+    padding: max(22px, min(5vw, 80px));
+    background: rgb(0 0 0 / 0.86);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duracion-salida) var(--ease-salida),
+      visibility 0s var(--duracion-salida);
+  }
+  :global(.visor-abierto) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: opacity var(--duracion-entrada) var(--ease-suave) !important;
+  }
+  .visor img {
+    max-width: 100%;
+    max-height: 84svh;
+    object-fit: contain;
+    border-radius: 14px;
+    transform: scale(0.94);
+    transition: transform var(--duracion-salida) var(--ease-salida);
+  }
+  :global(.visor-abierto) img {
+    transform: scale(1);
+    transition: transform 0.42s var(--ease-resorte);
+  }
+  .visor-cerrar {
+    position: absolute;
+    top: 18px;
+    right: max(22px, min(5vw, 80px));
+    display: grid;
+    place-items: center;
+    width: var(--spacing-tactil);
+    height: var(--spacing-tactil);
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.14);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition-property: transform, background-color;
+    transition-duration: var(--duracion-respuesta);
+  }
+  .visor-cerrar:hover {
+    transform: scale(1.1);
+    background: rgb(255 255 255 / 0.26);
+  }
+</style>

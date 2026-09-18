@@ -1,0 +1,228 @@
+---
+import { getCollection } from 'astro:content';
+import Escena from '@components/Escena.astro';
+
+const obras = (await getCollection('obras')).sort(
+  (a, b) => a.data.orden - b.data.orden,
+);
+---
+
+{
+  /*
+  Repertorio.
+
+  No son tarjetas. Cada obra es una doble página editorial: el número
+  del montaje en grande, el título montado sobre el cartel, y la ficha
+  en columnas pequeñas debajo. El cartel sale del grid por un lado,
+  que es lo que le da el aire de revista y no de catálogo.
+*/
+}
+<section id="obras" class="seccion marco limite">
+  <header class="js-entra mb-[clamp(40px,7vw,84px)]">
+    <Escena ancla="obras" />
+    <h2 class="t-xl mb-4">En escena</h2>
+    <p class="t-lede text-tiza-200 max-w-[38ch]">
+      Dos montajes disponibles para temporada, festival o función única.
+    </p>
+  </header>
+
+  {
+    obras.map((obra, i) => (
+      <article
+        class:list={[
+          'obra grid items-center gap-x-[clamp(24px,5vw,76px)] gap-y-8 border-t border-white/10 py-[clamp(44px,7vw,96px)]',
+          obra.data.invertida ? 'obra-inv' : '',
+        ]}
+      >
+        {/* Ordinal del montaje. Es decoración tipográfica: el número
+            real ya lo dice el orden de lectura. */}
+        <p class="js-entra ordinal" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </p>
+
+        <figure class="cartel js-entra m-0">
+          <img
+            src={obra.data.cartel}
+            alt={obra.data.cartelAlt}
+            width="1100"
+            height="1666"
+            loading="lazy"
+            decoding="async"
+            class="w-full object-cover"
+          />
+        </figure>
+
+        <div class="cuerpo">
+          <h3 class="titulo js-entra">
+            <a href={`/obras/${obra.id}`}>{obra.data.titulo}</a>
+          </h3>
+
+          <p class="js-entra text-tiza-200 mt-5 max-w-[44ch] text-[1.02rem]">
+            {obra.data.sinopsis}
+          </p>
+
+          <dl class="js-entra ficha mt-8">
+            <div>
+              <dt>Duración</dt>
+              <dd>{obra.data.duracion}</dd>
+            </div>
+            <div>
+              <dt>Clasificación</dt>
+              <dd>{obra.data.clasificacion}</dd>
+            </div>
+            <div>
+              <dt>Espacio</dt>
+              <dd>{obra.data.espacio}</dd>
+            </div>
+          </dl>
+
+          <div class="js-entra mt-9 flex flex-wrap items-center gap-x-7 gap-y-3">
+            <a
+              class="btn"
+              href={obra.data.reservaUrl}
+              target="_blank"
+              rel="noopener"
+            >
+              Reservar por WhatsApp
+            </a>
+            <a class="enlace-sec" href={`/obras/${obra.id}`}>
+              Ficha técnica y fotos
+            </a>
+          </div>
+        </div>
+      </article>
+    ))
+  }
+</section>
+
+<style>
+  /* ── Rejilla editorial ──────────────────────────────────
+     Escritorio: tres columnas desiguales. El ordinal ocupa un
+     canal estrecho a la izquierda, el cartel una columna alta y
+     el texto la más ancha. Invertida, el cartel cruza al otro lado. */
+  .obra {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ordinal {
+    margin: 0;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(255 255 255 / 0.24);
+  }
+
+  .titulo {
+    font-size: clamp(2.1rem, 5.2vw, 4.4rem);
+    letter-spacing: -0.042em;
+    line-height: 1;
+  }
+  .titulo a {
+    display: inline;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.45s var(--ease-resorte);
+  }
+  .titulo a:hover {
+    background-size: 100% 1px;
+  }
+
+  .cartel img {
+    aspect-ratio: 3 / 4;
+    filter: saturate(0.92) brightness(0.95);
+    transition:
+      filter var(--duracion-respuesta) var(--ease-suave),
+      transform 0.5s var(--ease-suave);
+  }
+  .obra:hover .cartel img {
+    filter: none;
+  }
+
+  /* Ficha en columnas pequeñas, como metadata de catálogo */
+  .ficha {
+    display: grid;
+    gap: 1px;
+    background: rgb(255 255 255 / 0.1);
+    border-block: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .ficha > div {
+    background: var(--color-sala-950);
+    padding: 14px 0;
+  }
+  .ficha dt {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-tiza-400);
+  }
+  .ficha dd {
+    margin: 4px 0 0;
+    font-size: 1rem;
+  }
+
+  @media (min-width: 720px) {
+    .ficha {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .ficha > div {
+      padding: 14px 18px;
+    }
+    .ficha > div:first-child {
+      padding-left: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .obra {
+      grid-template-columns:
+        minmax(90px, 0.5fr)
+        minmax(0, 1.1fr)
+        minmax(0, 1.5fr);
+    }
+    .ordinal {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: start;
+      padding-top: 0.2em;
+    }
+    .cartel {
+      grid-row: 1;
+      grid-column: 2;
+      /* El cartel se sale del canal para romper la retícula */
+      margin-left: clamp(-56px, -3vw, -16px);
+    }
+    .cuerpo {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    /* Invertida: se espeja el orden de columnas, cartel a la
+       izquierda y ordinal al margen derecho. */
+    .obra-inv {
+      grid-template-columns:
+        minmax(0, 1.1fr)
+        minmax(0, 1.5fr)
+        minmax(90px, 0.5fr);
+    }
+    .obra-inv .cartel {
+      grid-column: 1;
+      grid-row: 1;
+      margin-left: 0;
+      margin-right: clamp(-56px, -3vw, -16px);
+    }
+    .obra-inv .cuerpo {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .obra-inv .ordinal {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+      text-align: right;
+    }
+  }
+</style>

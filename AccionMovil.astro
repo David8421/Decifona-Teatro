@@ -1,0 +1,79 @@
+---
+import { SITIO } from '@data/sitio';
+
+/*
+ * En escritorio el botón de reservar vive en la barra superior.
+ * En móvil esa barra no cabe, así que la acción principal se
+ * convierte en un botón fijo. La compañía vende por WhatsApp:
+ * dejarlo fuera de la pantalla en móvil era perder la conversión.
+ */
+---
+
+<a
+  data-accion-movil
+  href={`https://wa.me/${SITIO.whatsapp}`}
+  target="_blank"
+  rel="noopener"
+  class="accion-movil"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5 fill-current">
+    <path
+      d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.470 0 1.45 1.06 2.86 1.21 3.06.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.57-.35z"
+    ></path>
+    <path
+      d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.05-1.32A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3 .78.8-2.92-.2-.31A8.2 8.2 0 1 1 12 20.2z"
+    ></path>
+  </svg>
+  <span>Reservar</span>
+</a>
+
+<style>
+  .accion-movil {
+    position: fixed;
+    right: max(16px, min(4vw, 28px));
+    bottom: max(16px, min(4vw, 28px));
+    z-index: 95;
+    display: none;
+    align-items: center;
+    gap: 9px;
+    min-height: var(--spacing-tactil);
+    padding: 12px 20px;
+    border-radius: 980px;
+    background: var(--color-foco-700);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow:
+      0 2px 6px rgb(0 0 0 / 0.3),
+      0 12px 28px -8px rgb(0 0 0 / 0.6);
+    /* Entra desde abajo una sola vez, cuando el hero ya pasó */
+    transform: translateY(120%);
+    opacity: 0;
+    transition-property: transform, opacity, background-color;
+    transition-duration: var(--duracion-entrada);
+    transition-timing-function: var(--ease-resorte);
+  }
+
+  .accion-movil:active {
+    background: var(--color-foco-900);
+  }
+
+  @media (max-width: 900px) {
+    .accion-movil {
+      display: inline-flex;
+    }
+  }
+
+  /* La clase la pone el motor de scroll al salir del hero */
+  :global(.accion-visible) .accion-movil {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accion-movil {
+      transform: none;
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+import { TRAYECTOS, img } from '@data/sitio';
+---
+
+<section
+  id="viaje"
+  class="limite rounded-bloque bg-sala-900 mt-[clamp(60px,10vh,120px)] overflow-clip"
+>
+  <header class="js-entra marco pt-[clamp(44px,6vw,86px)]">
+    <h2 class="t-l mb-2.5">El limbo urbano</h2>
+    <p class="text-tiza-400">Cinco trayectos que se cruzan.</p>
+  </header>
+
+  {
+    /* En pantallas grandes se ancla y el scroll vertical mueve el riel
+      en horizontal. En móvil se convierte en carrusel táctil. */
+  }
+  <div data-viaje-pin class="viaje-pin">
+    <div class="riel-caja">
+      <div data-riel class="riel">
+        {
+          TRAYECTOS.map(t => (
+            <figure class="pieza">
+              <img
+                src={img(t.archivo, 1100)}
+                alt={`Escena de Transitare: ${t.titulo.toLowerCase()}`}
+                loading="lazy"
+                decoding="async"
+                class="rounded-caja aspect-[16/10.5] w-full object-cover"
+              />
+              <figcaption class="text-tiza-400 mt-3.5 text-sm">
+                <b class="text-tiza-50 block text-base font-medium tracking-[-0.02em]">
+                  {t.titulo}
+                </b>
+                {t.pie}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <div class="barra" aria-hidden="true">
+        <i data-barra></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .riel {
+    display: flex;
+    gap: 20px;
+    padding-inline: max(22px, min(5vw, 80px));
+    will-change: transform;
+  }
+  .pieza {
+    margin: 0;
+    flex: none;
+    width: clamp(260px, 40vw, 520px);
+  }
+
+  @media (min-width: 901px) {
+    .riel-caja {
+      display: flex;
+      height: 100svh;
+      align-items: center;
+      overflow: hidden;
+    }
+    .barra {
+      position: absolute;
+      bottom: 56px;
+      left: max(22px, min(5vw, 80px));
+      right: max(22px, min(5vw, 80px));
+      height: 3px;
+      border-radius: 2px;
+      background: rgb(255 255 255 / 0.12);
+    }
+    .barra i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-radius: 2px;
+      background: var(--color-foco-500);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .riel-caja {
+      padding-block: 26px 40px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .riel-caja::-webkit-scrollbar {
+      display: none;
+    }
+    .riel {
+      transform: none !important;
+    }
+    .pieza {
+      width: 76vw;
+      scroll-snap-align: center;
+    }
+    .barra {
+      display: none;
+    }
+  }
+</style>

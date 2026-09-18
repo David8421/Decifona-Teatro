@@ -1,0 +1,75 @@
+---
+import { SITIO, NAVEGACION, REDES, LOGO, img } from '@data/sitio';
+const anio = new Date().getFullYear();
+---
+
+<footer class="marco limite border-t border-white/10 pt-13 pb-9 text-sm">
+  <div class="grid gap-9 md:grid-cols-[1.4fr_1fr_1fr]">
+    <div>
+      <img
+        src={img(LOGO, 380)}
+        alt={SITIO.nombre}
+        width="132"
+        height="67"
+        class="mb-3.5 w-[132px]"
+        loading="lazy"
+        decoding="async"
+      />
+      <p class="text-tiza-400 max-w-[28ch]">{SITIO.lema}.</p>
+    </div>
+
+    <div>
+      <h2 class="text-tiza-400 mb-3.5 text-[13px] font-medium">Sitio</h2>
+      <ul class="grid gap-2.5">
+        <li>
+          <a
+            href="#inicio"
+            class="text-tiza-200 transition-colors hover:text-white">Inicio</a
+          >
+        </li>
+        {
+          NAVEGACION.map(e => (
+            <li>
+              <a
+                href={e.url}
+                class="text-tiza-200 transition-colors hover:text-white"
+              >
+                {e.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-tiza-400 mb-3.5 text-[13px] font-medium">Redes</h2>
+      <ul class="grid gap-2.5">
+        {
+          REDES.map(r => (
+            <li>
+              <a
+                href={r.url}
+                target="_blank"
+                rel="noopener"
+                class="text-tiza-200 transition-colors hover:text-white"
+              >
+                {r.nombre}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div
+    class="text-tiza-400 mt-11 flex flex-wrap justify-between gap-x-7 gap-y-3 border-t border-white/10 pt-5.5"
+  >
+    <span>&copy; {anio} {SITIO.nombre}</span>
+    <a
+      href={`mailto:${SITIO.correo}`}
+      class="transition-colors hover:text-white">{SITIO.correo}</a
+    >
+  </div>
+</footer>

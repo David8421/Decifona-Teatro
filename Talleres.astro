@@ -1,0 +1,131 @@
+---
+import { TALLERES, TALLER_FOTO, PREGUNTAS, SITIO, img } from '@data/sitio';
+import Escena from '@components/Escena.astro';
+---
+
+<section
+  class="claro seccion-amplia rounded-bloque bg-papel-50 text-papel-800 overflow-clip"
+>
+  <div id="talleres" class="marco limite">
+    <header class="js-entra mb-[clamp(36px,6vw,72px)]">
+      <Escena ancla="talleres" rotulo="Formación" claro />
+      <h2 class="t-xl mb-3.5">Talleres</h2>
+      <p class="t-lede text-papel-700 max-w-[40ch]">
+        Clases de teatro para todas las edades y niveles. No se necesita
+        experiencia previa.
+      </p>
+    </header>
+
+    {
+      /* La foto de taller estaba sin usar: da contexto de cómo es una
+        sesión antes de leer los tres formatos. */
+    }
+    <figure
+      data-taller
+      class="js-entra rounded-caja m-0 mb-[clamp(28px,4vw,48px)] overflow-hidden"
+    >
+      <img
+        src={img(TALLER_FOTO.archivo, 1800)}
+        alt={TALLER_FOTO.alt}
+        width="1800"
+        height="770"
+        loading="lazy"
+        decoding="async"
+        class="aspect-[21/9] w-full object-cover max-sm:aspect-[4/3]"
+      />
+    </figure>
+
+    <div class="js-entra grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        TALLERES.map(t => (
+          <article class="taller rounded-caja bg-black/[.045] p-8">
+            <h3 class="mb-2.5 text-2xl">{t.titulo}</h3>
+            <p class="text-[#6e6e73]">{t.texto}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="js-entra mt-8 flex flex-wrap items-center gap-4">
+      <a
+        class="btn"
+        href={`https://wa.me/${SITIO.whatsapp}?text=Hola,%20quiero%20información%20de%20los%20talleres`}
+        target="_blank"
+        rel="noopener"
+      >
+        Preguntar por un taller
+      </a>
+      <span class="text-[#6e6e73]">Te compartimos horarios, sede y costos.</span
+      >
+    </div>
+
+    <div data-faq class="mt-[clamp(46px,7vw,80px)] max-w-[840px]">
+      {
+        PREGUNTAS.map(p => (
+          <details class="border-t border-black/10 last:border-b">
+            <summary class="flex cursor-pointer items-center justify-between gap-5 py-5.5 text-[1.2rem] font-medium tracking-[-0.022em]">
+              {p.pregunta}
+              <span class="mas" aria-hidden="true" />
+            </summary>
+            <div data-faq-respuesta class="overflow-hidden">
+              <p class="text-papel-700 max-w-[62ch] pb-6">{p.respuesta}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .taller {
+    transition-property: transform, background-color;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .taller:hover {
+    transform: translateY(-4px);
+    background: rgb(0 0 0 / 0.075);
+  }
+
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover {
+    color: var(--color-foco-800);
+  }
+  .mas {
+    position: relative;
+    width: 17px;
+    height: 17px;
+    flex: none;
+  }
+  .mas::before,
+  .mas::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    border-radius: 2px;
+    background: var(--color-foco-700);
+    transition: transform var(--duracion-entrada) var(--ease-resorte);
+  }
+  .mas::before {
+    width: 100%;
+    height: 2px;
+  }
+  .mas::after {
+    width: 2px;
+    height: 100%;
+  }
+  details[open] .mas::after {
+    transform: rotate(90deg) scaleX(0);
+  }
+  /* La imagen clara no necesita el contorno blanco de la base */
+  figure img {
+    outline-color: rgb(0 0 0 / 0.08);
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { FONDO_404, img } from '@data/sitio';
+---
+
+<MainLayout titulo="Página no encontrada — Deficciona Teatro">
+  <section
+    class="relative grid min-h-svh place-items-center overflow-clip text-center"
+  >
+    <div class="vineta absolute inset-0" aria-hidden="true">
+      <img
+        src={img(FONDO_404.archivo, 2000)}
+        alt=""
+        width="2000"
+        height="1125"
+        class="h-full w-full object-cover opacity-30 grayscale-[.4]"
+      />
+      <div
+        class="absolute inset-0"
+        style="background: linear-gradient(to bottom, rgb(0 0 0 / .9), rgb(0 0 0 / .6) 45%, rgb(0 0 0 / .95))"
+      >
+      </div>
+    </div>
+
+    <div class="marco limite relative z-[1] py-40">
+      <p class="text-tiza-400 mb-4">Error 404</p>
+      <h1 class="t-xl mb-5">Esta página no está en cartelera</h1>
+      <p class="t-lede text-tiza-200 mx-auto mb-9 max-w-[42ch]">
+        El enlace que seguiste no lleva a ningún lado. Vuelve al inicio para ver
+        el repertorio.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3.5">
+        <a class="btn" href="/">Ir al inicio</a>
+        <a class="btn btn-fantasma" href="/#obras">Ver el repertorio</a>
+      </div>
+    </div>
+  </section>
+</MainLayout>

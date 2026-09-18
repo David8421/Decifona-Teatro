@@ -1,0 +1,62 @@
+---
+import { escena } from '@data/escenas';
+
+interface Props {
+  ancla: string;
+  /** Rótulo alterno cuando la sección no es la escena principal */
+  rotulo?: string;
+  claro?: boolean;
+}
+
+const { ancla, rotulo, claro = false } = Astro.props;
+const e = escena(ancla);
+---
+
+{
+  /*
+  Rótulo de escena. Es el elemento que convierte una sucesión de
+  secciones en una función con orden: número, filete y nombre.
+  La línea crece con el scroll, como un telón que corre.
+*/
+}
+<p class:list={['escena', claro && 'escena-claro']} data-rotulo>
+  <span class="numero">{e.numero}</span>
+  <span class="filete" aria-hidden="true"></span>
+  <span class="nombre">{rotulo ?? e.rotulo}</span>
+</p>
+
+<style>
+  .escena {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 clamp(20px, 3vw, 34px);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-tiza-400);
+  }
+  .numero {
+    font-variant-numeric: tabular-nums;
+    color: var(--color-foco-500);
+  }
+  .filete {
+    height: 1px;
+    width: clamp(40px, 8vw, 110px);
+    background: currentColor;
+    opacity: 0.45;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  /* Sin motor de animación el filete se ve dibujado */
+  :global(html.sin-motor) .filete {
+    transform: none;
+  }
+  .escena-claro {
+    color: #6e6e73;
+  }
+  .escena-claro .numero {
+    color: var(--color-foco-700);
+  }
+</style>

@@ -1,0 +1,71 @@
+---
+import Escena from '@components/Escena.astro';
+import { ARCHIVO, img } from '@data/sitio';
+
+/*
+ * Retratos de la compañía.
+ *
+ * Antes esto era un mosaico de proporciones irregulares con recorte
+ * centrado. Con retratos verticales, el recorte centrado cae en el
+ * torso y deja la cara fuera del encuadre.
+ *
+ * Ahora: una sola proporción para todos y el recorte anclado arriba,
+ * que es donde está la cabeza en una foto de retrato. Una rejilla
+ * uniforme además se lee como lo que es, un elenco, en vez de como
+ * una galería suelta.
+ */
+---
+
+<section id="elenco" class="seccion marco limite">
+  <header class="js-entra mb-[clamp(36px,6vw,72px)]">
+    <Escena ancla="nosotros" rotulo="El elenco" />
+    <h2 class="t-l mb-2.5">La compañía</h2>
+    <p class="text-tiza-400">Quienes hacen posible cada montaje.</p>
+  </header>
+
+  <ul
+    class="grid list-none grid-cols-2 gap-3.5 p-0 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+  >
+    {
+      ARCHIVO.map((archivo, i) => (
+        <li>
+          <figure
+            data-ampliable
+            tabindex="0"
+            role="button"
+            aria-label={`Ampliar retrato ${i + 1}`}
+            class="retrato rounded-caja bg-sala-800 m-0 cursor-zoom-in overflow-hidden"
+          >
+            <img
+              src={img(archivo, 600)}
+              data-grande={img(archivo, 1400)}
+              alt={`Integrante de Deficciona Teatro, retrato ${i + 1} de ${ARCHIVO.length}`}
+              width="600"
+              height="750"
+              loading="lazy"
+              decoding="async"
+              class="aspect-[4/5] w-full object-cover"
+            />
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  /* La cara vive en el tercio superior de un retrato: el recorte se
+     ancla ahí, no al centro geométrico. */
+  .retrato img {
+    object-position: 50% 18%;
+    filter: brightness(0.94) contrast(1.02);
+    transition-property: transform, filter;
+    transition-duration: var(--duracion-respuesta);
+    transition-timing-function: var(--ease-suave);
+  }
+  .retrato:hover img,
+  .retrato:focus-within img {
+    transform: scale(1.03);
+    filter: none;
+  }
+</style>
