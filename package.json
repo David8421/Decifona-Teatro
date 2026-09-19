@@ -2,6 +2,7 @@
   "name": "deficciona-teatro",
   "type": "module",
   "version": "1.0.0",
+  "packageManager": "pnpm@12.4.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

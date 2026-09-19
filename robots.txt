@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teatro.deficciona.com/sitemap-index.xml
