@@ -1,0 +1,60 @@
+# Compila el sitio y lo sube a Hostinger por FTP en cada push a main.
+#
+# Antes de que funcione hay que crear tres secretos en el repositorio
+# (Settings → Secrets and variables → Actions):
+#
+#   FTP_SERVER    solo el host, SIN el prefijo ftp:// y sin barra final
+#                 (la IP del servidor, o el dominio)
+#   FTP_USUARIO   el usuario de esa cuenta FTP (formato uXXXXXXXXX.dominio)
+#   FTP_CLAVE     su contraseña
+#
+# La contraseña nunca se escribe en este archivo: vive solo en los
+# secretos del repositorio y GitHub la oculta en los registros.
+
+name: Desplegar en Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+
+jobs:
+  desplegar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Sin 'version': la toma de packageManager en package.json,
+      # así el lockfile y el CI no pueden desincronizarse.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Compilar
+        run: pnpm build
+
+      - name: Subir por FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USUARIO }}
+          password: ${{ secrets.FTP_CLAVE }}
+          # FTP a secas manda la contraseña sin cifrar en cada despliegue.
+          # Si el servidor rechaza TLS, cambia a 'ftp' y verás el error
+          # exacto en el registro del paso.
+          protocol: ftps
+          local-dir: ./dist/
+          # La cuenta FTP principal abre en la carpeta de inicio, que
+          # contiene domains/. El subdominio vive dentro, no en la raíz.
+          # Si usaras una cuenta FTP creada solo para el subdominio,
+          # esta ruta sería ./ porque ya abriría ahí dentro.
+          server-dir: domains/teatro.deficciona.com/public_html/
+          # dangerous-clean-slate borraría el destino antes de subir.
+          # Desactivado: si el FTP falla a medias, el sitio queda caído.
+          dangerous-clean-slate: false
